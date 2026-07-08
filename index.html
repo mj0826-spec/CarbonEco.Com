@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarbonEco.com | Carbón Ecológico Premium</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/188/188333.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/188/188333.png" alt="Icono" class="logo-icon">
+            CarbonEco.com
+        </div>
+        <ul class="nav-links">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#beneficios">Beneficios</a></li>
+            <li><a href="#tienda-online">Tienda</a></li>
+            <li><a href="#calculadora">Impacto</a></li>
+            <li><a href="#testimonios">Opiniones</a></li>
+            <li><a href="#faq">Preguntas</a></li>
+            <li><button onclick="abrirModal()" class="btn-nav-login" id="userBtn">Entrar / Registro</button></li>
+            <li><a href="admin.html" class="btn-erp-link" style="background: #e74c3c; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.8rem;">Acceso ERP ⚙️</a></li>
+        </ul>
+    </nav>
+
+    <header id="inicio" class="hero">
+        <h1>El Carbón que cuida tu planeta</h1>
+        <p>Energía circular hecha en Arequipa para parrillas premium de alto rendimiento.</p>
+        <br>
+        <a href="#tienda-online" class="btn-primary">Explorar Tienda</a>
+    </header>
+
+    <section id="beneficios">
+        <h2>¿Por qué elegir CarbonEco?</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="icon-circle">🔥</div>
+                <h3>Mayor duración</h3>
+                <p>Calor constante por más de 3 horas continuas sin perder potencia.</p>
+                <a href="#tienda-online" class="btn-ver-precio">Ver Precio</a>
+            </div>
+            <div class="card">
+                <div class="icon-circle">💨</div>
+                <h3>Sin Humo Negro</h3>
+                <p>Parrilladas más sanas, libres de toxinas y olores desagradables.</p>
+                <a href="#tienda-online" class="btn-ver-precio">Ver Precio</a>
+            </div>
+            <div class="card">
+                <div class="icon-circle">🌱</div>
+                <h3>Eco-Amigable</h3>
+                <p>Fabricado con material biomasa 100% reciclado y sostenible.</p>
+                <a href="#tienda-online" class="btn-ver-precio">Ver Precio</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="tienda-online" class="shop-section">
+        <h2 class="light-text">Tienda Online Activa</h2>
+        <p style="color: #e8f8f5; margin-bottom: 20px; text-align: center;">¡Precios especiales con envío a domicilio en Arequipa!</p>
+        <div class="grid">
+            <div class="card product-card">
+                <div class="product-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&q=80" alt="Parrilla Familiar" class="product-img">
+                </div>
+                <h3>Pack Parrillero 5kg</h3>
+                <p class="price" data-precio="25">S/ 25.00</p>
+                <button class="btn-primary" onclick="enviarPedidoAlERP('Pack Parrillero 5kg', 25)">Comprar y Enviar Orden</button>
+            </div>
+            <div class="card product-card">
+                <div class="product-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=500&q=80" alt="Costillas" class="product-img">
+                </div>
+                <h3>Pack Banquete 10kg</h3>
+                <p class="price" data-precio="45">S/ 45.00</p>
+                <button class="btn-primary" onclick="enviarPedidoAlERP('Pack Banquete 10kg', 45)">Comprar y Enviar Orden</button>
+            </div>
+            <div class="card product-card">
+                <div class="product-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1608797178974-15b35a61d121?w=500&q=80" alt="Briquetas Carbón" class="product-img">
+                </div>
+                <h3>Caja Industrial 20kg</h3>
+                <p class="price" data-precio="80">S/ 80.00</p>
+                <button class="btn-primary" onclick="enviarPedidoAlERP('Caja Industrial 20kg', 80)">Comprar y Enviar Orden</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonios" class="testimonios-section">
+        <h2>Lo que dicen nuestros clientes</h2>
+        <div class="grid">
+            <div class="card testimonio-card animated-card">
+                <div class="testimonio-header">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80" alt="Carlos Mendoza" class="testimonio-avatar">
+                    <div class="testimonio-user-info">
+                        <h4>Carlos M.</h4>
+                        <span class="user-sub">Dueño de Parrillas El Cercado</span>
+                    </div>
+                </div>
+                <p class="stars">⭐⭐⭐⭐⭐</p>
+                <p class="comment">"Cambiamos el carbón tradicional por CarbonEco en el restaurante y el cambio fue rotundo. Cero humo molesto para los clientes."</p>
+            </div>
+            <div class="card testimonio-card animated-card">
+                <div class="testimonio-header">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&q=80" alt="Andrea Ramos" class="testimonio-avatar">
+                    <div class="testimonio-user-info">
+                        <h4>Andrea R.</h4>
+                        <span class="user-sub">Cliente Residencial (Yanahuara)</span>
+                    </div>
+                </div>
+                <p class="stars">⭐⭐⭐⭐⭐</p>
+                <p class="comment">"Excelente duración. Me rindió perfectamente para un asado familiar largo y encendió súper rápido."</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="calculadora" class="calc-box">
+        <h2>Calculadora de Impacto Ambiental</h2>
+        <p>Descubre cuántos residuos salvas al planeta usando nuestra alternativa verde.</p>
+        <div class="calc-inputs">
+            <input type="number" id="kilos" placeholder="Kilos de carbón que usas al mes">
+            <button onclick="calcularImpacto()" class="btn-primary">Calcular Huella</button>
+        </div>
+        <div id="resultado" class="resultado-container"></div>
+    </section>
+
+    <section id="faq" class="faq-section">
+        <h2>Preguntas Frecuentes</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">¿De qué está hecho exactamente? <span>+</span></button>
+                <div class="faq-answer">
+                    <p>Está hecho a base de residuos vegetales y aserrín compactado de alta densidad. No talamos árboles para su producción.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">¿Cómo se enciende este carbón ecológico? <span>+</span></button>
+                <div class="faq-answer">
+                    <p>Se enciende igual que el tradicional usando un iniciador de fuego común, pero mantiene el calor uniforme por más tiempo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contacto" class="contact-black">
+        <h2>¿Tienes un restaurante o negocio?</h2>
+        <p>Ofrecemos precios al por mayor y distribución programada.</p>
+        <br>
+        <p>📱 WhatsApp Directo: +51 932 221 052</p>
+        <p>📍 Planta de Procesamiento: Arequipa, Perú</p>
+        <br>
+        <hr style="opacity: 0.2; margin: 20px 0;">
+        <p style="color: #2ecc71; font-size: 0.9rem;">CarbonEco © 2026 | Todos los derechos reservados</p>
+    </footer>
+
+    <div id="accessModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <div id="authContainer">
+                <div class="tabs">
+                    <button id="tab-login" class="active" onclick="showForm('login')">Entrar</button>
+                    <button id="tab-signup" onclick="showForm('signup')">Registrarse</button>
+                </div>
+                <form id="form-login" onsubmit="handleLogin(event)">
+                    <p style="font-size: 0.8rem; color: #666; margin-bottom: 15px;">Acceso Demo: <b>cliente@test.com</b> / <b>1234</b></p>
+                    <input type="email" id="login-email" placeholder="Correo electrónico" required>
+                    <input type="password" id="login-pass" placeholder="Contraseña" required>
+                    <button type="submit" class="btn-primary">Iniciar Sesión</button>
+                </form>
+                <form id="form-signup" onsubmit="handleSimulatedSignup(event)" style="display:none;">
+                    <input type="text" id="signup-name" placeholder="Nombre completo" required>
+                    <input type="email" id="signup-email" placeholder="Correo electrónico" required>
+                    <input type="password" id="signup-pass" placeholder="Crea tu Contraseña" required>
+                    <input type="text" id="signup-phone" placeholder="Número de Celular" required>
+                    <button type="submit" class="btn-primary">Crear Cuenta</button>
+                </form>
+            </div>
+            <div id="verifyContainer" style="display:none;">
+                <h3>🔒 Verificación de Seguridad</h3>
+                <p style="font-size: 0.9rem; color: #555; margin: 10px 0;">Código OTP de simulación:</p>
+                <input type="text" value="654321" readonly style="background: #f0f0f0; text-align: center; font-weight: bold; font-size: 1.2rem; letter-spacing: 4px; color: #1b2631; width:100%; border:none; padding:10px; border-radius:5px; margin-bottom:15px;">
+                <button onclick="accesoConcedido()" class="btn-primary">Verificar y Activar Perfil</button>
+            </div>
+        </div>
+    </div>
+
+    <a href="https://wa.me/51932221052?text=Hola%20CarbonEco,%20deseo%20más%20información%20sobre%20sus%20productos." class="btn-whatsapp" target="_blank">
+        <i class="fa-brands fa-whatsapp"></i> Pedir por WhatsApp
+    </a>
+
+    <script src="script.js"></script>
+</body>
+</html>

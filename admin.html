@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel ERP Avanzado | CarbonEco</title>
+    <style>
+        :root { 
+            --primary: #2ecc71; 
+            --dark: #1a252f; 
+            --danger: #e74c3c; 
+            --warn: #f39c12; 
+            --info: #3498db;
+            --bg-light: #eaeded;
+        }
+        body { font-family: sans-serif; background: var(--bg-light); margin: 0; padding: 20px; color: #333; }
+        
+        .header-admin { background: var(--dark); color: white; padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-back { background: #34495e; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+        
+        .login-box { background: white; max-width: 400px; margin: 100px auto; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
+        .login-box select, .login-box input { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
+        
+        /* Sistema de Navegación por Pestañas */
+        .admin-tabs { display: flex; gap: 5px; margin-bottom: 20px; background: #d5dbdb; padding: 5px; border-radius: 6px; }
+        .tab-btn { flex: 1; padding: 12px; background: none; border: none; font-weight: bold; font-size: 0.95rem; color: #566573; cursor: pointer; border-radius: 4px; transition: all 0.2s; }
+        .tab-btn:hover { background: rgba(255,255,255,0.5); color: var(--dark); }
+        .tab-btn.active { background: white; color: var(--dark); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .stat-card { background: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .stat-card h3 { margin: 0; color: #7f8c8d; font-size: 0.85rem; text-transform: uppercase; }
+        .stat-card p { margin: 10px 0 0 0; font-size: 1.8rem; font-weight: bold; }
+        
+        .panel-box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7e9; font-size: 0.9rem; }
+        th { background: #f2f4f4; }
+        
+        .badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; color: white; }
+        .badge-pendiente { background: var(--warn); }
+        .badge-despachado { background: var(--primary); }
+        
+        .btn-action { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; color: white; margin-right: 5px; transition: opacity 0.2s; }
+        .btn-action:hover { opacity: 0.9; }
+        .btn-del { background: var(--danger); }
+        .btn-status { background: var(--info); }
+        .btn-status-active { background: var(--primary); }
+        .btn-status-susp { background: var(--warn); }
+        .btn-clear { background: #7f8c8d; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+        /* Consola de Servidor / Logs */
+        .server-logs { background: #111; color: #2ecc71; font-family: monospace; padding: 15px; border-radius: 6px; height: 250px; overflow-y: auto; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .log-line { margin-bottom: 6px; font-size: 0.85rem; }
+        .log-time { color: #888; margin-right: 8px; }
+        .log-info { color: #3498db; }
+        .log-warn { color: #f1c40f; }
+        .log-danger { color: #e74c3c; }
+    </style>
+</head>
+<body>
+
+    <div id="authPanel">
+        <div class="login-box">
+            <h2>🔑 Control de Accesos ERP</h2>
+            <p style="color:#7f8c8d; font-size:0.85rem; margin-bottom:20px;">Selecciona tu rol para auditar el ecosistema</p>
+            <select id="adminRol">
+                <option value="dueno">Dueño / Administrador General</option>
+                <option value="contribuidor">Contribuidor / Operario</option>
+            </select>
+            <input type="password" id="adminPass" value="2026" placeholder="Código de Seguridad (Clave: 2026)">
+            <button onclick="ingresarAlERP()" style="width:100%; padding:10px; background:var(--dark); color:white; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">Autenticar Credenciales</button>
+            <br><br>
+            <a href="index.html" style="color:#7f8c8d; font-size:0.9rem; text-decoration:none;">Volver a la tienda</a>
+        </div>
+    </div>
+
+    <div id="mainErpContent" style="display: none;">
+        <div class="header-admin">
+            <div>
+                <h1 style="margin:0; font-size:1.6rem;">⚙️ Módulo de Gestión ERP Logístico</h1>
+                <p style="margin:5px 0 0 0; opacity:0.8; font-size:0.85rem;">Sesión: <span id="lblRolActive" style="color:var(--primary); font-weight:bold;"></span></p>
+            </div>
+            <div>
+                <button onclick="cerrarSesionAdmin()" class="btn-back" style="background:#7f8c8d; margin-right:10px;">Cerrar Panel</button>
+                <a href="index.html" class="btn-back">⬅️ Tienda</a>
+            </div>
+        </div>
+
+        <nav class="admin-tabs">
+            <button class="tab-btn active" onclick="switchTab('tab-dashboard', this)">📊 Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('tab-pedidos', this)">📦 Órdenes de Pedido</button>
+            <button class="tab-btn" onclick="switchTab('tab-usuarios', this)">👥 Usuarios Afiliados</button>
+            <button class="tab-btn" onclick="switchTab('tab-servidor', this)">🖥️ Logs del Servidor</button>
+        </nav>
+
+        <div id="tab-dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card"><h3>Caja Recaudada</h3><p id="txtCaja" style="color:var(--primary)">S/ 0.00</p></div>
+                <div class="stat-card"><h3>Total Pedidos</h3><p id="txtPedidosCount">0</p></div>
+                <div class="stat-card"><h3>Usuarios Registrados</h3><p id="txtClientesCount">0</p></div>
+            </div>
+            <div class="panel-box">
+                <h3>Resumen Ejecutivo</h3>
+                <p>Bienvenido al sistema de métricas. Navega por las pestañas superiores para auditar, gestionar despachos y controlar los accesos del sistema web en tiempo real.</p>
+            </div>
+        </div>
+
+        <div id="tab-pedidos" class="tab-content">
+            <div class="panel-box">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="margin:0; font-size:1.2rem;">📦 Historial y Control de Órdenes de Pedido</h2>
+                    <button id="btnVaciarHistorial" onclick="limpiarTodoElHistorial()" class="btn-clear" style="display:none;">Vaciar Historial Completo</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Correo</th>
+                            <th>Contacto</th>
+                            <th>Producto</th>
+                            <th>Monto</th>
+                            <th>Estado Logístico</th>
+                            <th>Acciones de Gestión</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaPedidosBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-usuarios" class="tab-content">
+            <div class="panel-box">
+                <h2 style="margin:0 0 15px 0; font-size:1.2rem;">👥 Base de Datos y Auditoría de Afiliados / Clientes</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre de Usuario</th>
+                            <th>Correo Electrónico</th>
+                            <th>Teléfono Celular</th>
+                            <th>Estado de Cuenta</th>
+                            <th>Acciones Operativas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaUsuariosBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-servidor" class="tab-content">
+            <div class="panel-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2 style="margin:0; font-size:1.2rem;">🖥️ Respuestas del Servidor Backend (Logs Activos)</h2>
+                    <button onclick="clearLogs()" class="btn-clear" style="background:#34495e;">Limpiar Consola</button>
+                </div>
+                <div class="server-logs" id="serverLogsContainer">
+                    </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentRol = "";
+
+        function logServer(message, type = 'info') {
+            const container = document.getElementById('serverLogsContainer');
+            if(!container) return;
+            const time = new Date().toLocaleTimeString();
+            let typeClass = 'log-info';
+            if(type === 'warn') typeClass = 'log-warn';
+            if(type === 'danger') typeClass = 'log-danger';
+
+            container.innerHTML += `
+                <div class="log-line">
+                    <span class="log-time">[${time}]</span>
+                    <span class="${typeClass}">[${type.toUpperCase()}]</span> ${message}
+                </div>
+            `;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function clearLogs() {
+            document.getElementById('serverLogsContainer').innerHTML = '';
+            logServer("Consola reiniciada por el operador.");
+        }
+
+        function switchTab(tabId, button) {
+            // Desactivar pestañas y contenidos
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            // Activar seleccionados
+            document.getElementById(tabId).classList.add('active');
+            button.classList.add('active');
+            
+            logServer(`Navegó a la pestaña: ${button.innerText.trim()}`);
+        }
+
+        function ingresarAlERP() {
+            let pass = document.getElementById('adminPass').value;
+            let rol = document.getElementById('adminRol').value;
+
+            if (pass === "2026") {
+                currentRol = rol;
+                document.getElementById('authPanel').style.display = 'none';
+                document.getElementById('mainErpContent').style.display = 'block';
+                document.getElementById('lblRolActive').innerText = rol === 'dueno' ? 'Dueño / Admin General' : 'Contribuidor / Operario';
+                
+                if(currentRol === 'dueno') {
+                    document.getElementById('btnVaciarHistorial').style.display = 'block';
+                } else {
+                    document.getElementById('btnVaciarHistorial').style.display = 'none';
+                }
+                
+                // Logs iniciales
+                clearLogs();
+                logServer(`Sesión iniciada con éxito. Rol: ${rol.toUpperCase()}`);
+                logServer("Conexión establecida con LocalStorage DB.");
+                cargarDatosERP();
+            } else {
+                alert("❌ Código de seguridad incorrecto.");
+            }
+        }
+
+        function cerrarSesionAdmin() {
+            logServer(`Sesión cerrada para el Rol: ${currentRol.toUpperCase()}`);
+            document.getElementById('adminPass').value = "2026";
+            document.getElementById('authPanel').style.display = 'block';
+            document.getElementById('mainErpContent').style.display = 'none';
+        }
+
+        function cargarDatosERP() {
+            let pedidos = JSON.parse(localStorage.getItem('pedidosCarbonEco')) || [];
+            let caja = parseFloat(localStorage.getItem('dineroCarbonEco')) || 0;
+            let afiliados = JSON.parse(localStorage.getItem('afiliadosCarbonEco')) || [];
+
+            document.getElementById('txtCaja').innerText = `S/ ${caja.toFixed(2)}`;
+            document.getElementById('txtPedidosCount').innerText = pedidos.length;
+            document.getElementById('txtClientesCount').innerText = afiliados.length;
+
+            // Renderizar Pedidos
+            let htmlPedidos = "";
+            if (pedidos.length === 0) {
+                htmlPedidos = `<tr><td colspan="7" style="text-align:center; color:#95a5a6;">No hay órdenes registradas.</td></tr>`;
+            } else {
+                pedidos.forEach((item, index) => {
+                    let claseBadge = item.estado === 'Despachado' ? 'badge-despachado' : 'badge-pendiente';
+                    htmlPedidos += `
+                        <tr>
+                            <td><b>${item.nombre}</b></td>
+                            <td>${item.correo}</td>
+                            <td>📞 ${item.celular || 'Sin número'}</td>
+                            <td>${item.producto}</td>
+                            <td style="font-weight:bold;">S/ ${parseFloat(item.precio).toFixed(2)}</td>
+                            <td><span class="badge ${claseBadge}">${item.estado || 'Pendiente'}</span></td>
+                            <td>
+                                <button class="btn-action btn-status" onclick="cambiarEstadoPedido(${index})">🔄 Estado</button>
+                                <button class="btn-action btn-del" onclick="eliminarPedidoIndividual(${index})">❌ Borrar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            document.getElementById('tablaPedidosBody').innerHTML = htmlPedidos;
+
+            // Renderizar Usuarios Afiliados (CON BORRADO AGREGADO)
+            let htmlUsuarios = "";
+            if (afiliados.length === 0) {
+                htmlUsuarios = `<tr><td colspan="5" style="text-align:center; color:#95a5a6;">No hay usuarios guardados.</td></tr>`;
+            } else {
+                afiliados.forEach((user, idx) => {
+                    let textStatus = user.suspendido ? '🚫 Suspendido' : '🟢 Activo';
+                    let btnText = user.suspendido ? 'Activar' : 'Suspender';
+                    let btnClass = user.suspendido ? 'btn-status-active' : 'btn-status-susp';
+
+                    htmlUsuarios += `
+                        <tr>
+                            <td>${user.usuario}</td>
+                            <td>${user.correo}</td>
+                            <td>${user.celular || 'No provisto'}</td>
+                            <td style="font-weight:bold;">${textStatus}</td>
+                            <td>
+                                <button class="btn-action ${btnClass}" onclick="toggleStatusUsuario(${idx})">${btnText}</button>
+                                <button class="btn-action btn-del" onclick="eliminarUsuario(${idx})">❌ Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            document.getElementById('tablaUsuariosBody').innerHTML = htmlUsuarios;
+        }
+
+        function cambiarEstadoPedido(index) {
+            let pedidos = JSON.parse(localStorage.getItem('pedidosCarbonEco')) || [];
+            let anterior = pedidos[index].estado;
+            pedidos[index].estado = pedidos[index].estado === "Despachado" ? "Pendiente" : "Despachado";
+            localStorage.setItem('pedidosCarbonEco', JSON.stringify(pedidos));
+            
+            logServer(`Orden #${index} de ${pedidos[index].nombre} modificada: ${anterior} ➡️ ${pedidos[index].estado}`, 'warn');
+            cargarDatosERP();
+        }
+
+        function eliminarPedidoIndividual(index) {
+            let pedidos = JSON.parse(localStorage.getItem('pedidosCarbonEco')) || [];
+            if (confirm(`¿Seguro que deseas eliminar el pedido de ${pedidos[index].nombre}?`)) {
+                let caja = parseFloat(localStorage.getItem('dineroCarbonEco')) || 0;
+
+                caja -= pedidos[index].precio;
+                if(caja < 0) caja = 0;
+
+                logServer(`Pedido de ${pedidos[index].nombre} por S/ ${pedidos[index].precio} eliminado del sistema.`, 'danger');
+                
+                pedidos.splice(index, 1);
+                localStorage.setItem('pedidosCarbonEco', JSON.stringify(pedidos));
+                localStorage.setItem('dineroCarbonEco', caja.toString());
+                cargarDatosERP();
+            }
+        }
+
+        function toggleStatusUsuario(index) {
+            let afiliados = JSON.parse(localStorage.getItem('afiliadosCarbonEco')) || [];
+            afiliados[index].suspendido = !afiliados[index].suspendido;
+            localStorage.setItem('afiliadosCarbonEco', JSON.stringify(afiliados));
+            
+            logServer(`Usuario ${afiliados[index].correo} cambiado a: ${afiliados[index].suspendido ? 'SUSPENDIDO' : 'ACTIVO'}`, 'warn');
+            cargarDatosERP();
+        }
+
+        function eliminarUsuario(index) {
+            let afiliados = JSON.parse(localStorage.getItem('afiliadosCarbonEco')) || [];
+            let usuarioABorrar = afiliados[index].correo;
+
+            if (confirm(`⚠️ ¿Estás completamente seguro de eliminar al usuario [ ${usuarioABorrar} ] del sistema? Esta acción no se puede deshacer.`)) {
+                logServer(`Usuario remoto con credencial ${usuarioABorrar} purgado exitosamente del LocalStorage.`, 'danger');
+                
+                afiliados.splice(index, 1);
+                localStorage.setItem('afiliadosCarbonEco', JSON.stringify(afiliados));
+                cargarDatosERP();
+            }
+        }
+
+        function limpiarTodoElHistorial() {
+            if (confirm("⚠ ¿Restaurar a cero todos los pedidos y dinero de la caja?")) {
+                localStorage.setItem('pedidosCarbonEco', JSON.stringify([]));
+                localStorage.setItem('dineroCarbonEco', "0");
+                logServer("Base de datos de pedidos e ingresos formateada a 0.", "danger");
+                cargarDatosERP();
+            }
+        }
+    </script>
+</body>
+</html>
